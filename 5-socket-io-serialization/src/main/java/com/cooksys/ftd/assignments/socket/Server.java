@@ -1,17 +1,26 @@
 package com.cooksys.ftd.assignments.socket;
 
+import com.cooksys.ftd.assignments.socket.model.Config;
 import com.cooksys.ftd.assignments.socket.model.Student;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 public class Server extends Utils {
 
 
-    /**
+    private static final String Config = null;
+
+	/**
      * Reads a {@link Student} object from the given file path
      *
      * @param studentFilePath the file path from which to read the student config file
@@ -26,34 +35,6 @@ public class Server extends Utils {
         return student;
     }
 
-//    Unmarshaller unmarshaller = Utils.createJAXBContext().createUnmarshaller();
-//   	File file = new File("config/config.xml");
-//   	Config Config =(Config)unmarshaller.unmarshal(file);
-//	
-//	Student std = loadStudent(Config.getStudentFilePath(),Utils.createJAXBContext());
-//	System.out.println(std);
-//	
-//	try
-//	(	
-//			ServerSocket ss =new ServerSocket(Config.getLocal().getPort());
-//			Socket s = ss.accept();
-//			OutputStream out = s.getOutputStream();
-//			
-//	){
-//		
-//		Marshaller jaxMarshaller = Utils.createJAXBContext().createMarshaller();
-//       	jaxMarshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, true);
-//    	jaxMarshaller.marshal(std, out);
-//		
-//		s.close();
-//		ss.close();
-//		
-//	}catch(IOException e){
-//		
-//	}
-//	
-//	// TODO
-//}
     /**
      * The server should load a {@link com.cooksys.ftd.assignments.socket.model.Config} object from the
      * <project-root>/config/config.xml path, using the "port" property of the embedded
@@ -66,7 +47,24 @@ public class Server extends Utils {
      *
      * Following this transaction, the server may shut down or listen for more connections.
      */
-    public static void main(String[] args) {
-        // TODO
+    public static void main(String[] args) throws UnknownHostException, IOException, JAXBException {
+        Unmarshaller data = Utils.createJAXBContext().createUnmarshaller();
+        File file = new File("config/config.xml");
+        Config Config = (Config)data.unmarshal(file);
+        
+        Student student= loadStudent(Config.getStudentFilePath(), Utils.createJAXBContext());
+        System.out.println(student);
+        
+        ServerSocket server = new ServerSocket(Config.getLocal().getPort());
+        Socket socket = server.accept();
+        OutputStream out = socket.getOutputStream();
+        
+        Marshaller jaxMarshaller = Utils.createJAXBContext().createMarshaller();
+        jaxMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        jaxMarshaller.marshal(data, out);
+        
+        socket.close();
+        server.close();
+        
     }
 }
