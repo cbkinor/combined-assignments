@@ -1,5 +1,5 @@
-<student first-name="" last-name="">
-	<favorite-ide></favorite-ide>
-	<favorite-language></favorite-language>
-	<favorite-paradigm></favorite-paradigm>
+<student first-name="Chris" last-name="Kuiper">
+	<favorite-ide>Atom</favorite-ide>
+	<favorite-language>Java</favorite-language>
+	<favorite-paradigm>OOP</favorite-paradigm>
 </student>
