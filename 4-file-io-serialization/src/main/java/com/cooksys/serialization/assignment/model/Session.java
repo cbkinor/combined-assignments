@@ -9,16 +9,20 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class Session {
+	@XmlAttribute
     private String location;
+	@XmlAttribute (name = "start-date")
     private String startDate;
+	@XmlElement
     private Instructor instructor;
+    @XmlElement(name="student")
+    @XmlElementWrapper(name="students")
     private List<Student> students;
 
     public String getLocation() {
         return location;
     }
 
-    @XmlAttribute(name="location")
     public void setLocation(String location) {
         this.location = location;
     }
@@ -27,7 +31,6 @@ public class Session {
         return startDate;
     }
 
-    @XmlAttribute(name="start-date")
     public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
@@ -36,7 +39,6 @@ public class Session {
         return instructor;
     }
 
-    @XmlElement(name="instructor")
     public void setInstructor(Instructor instructor) {
         this.instructor = instructor;
     }
@@ -45,8 +47,6 @@ public class Session {
         return students;
     }
 
-    @XmlElement(name="student")
-    @XmlElementWrapper(name="students")
     public void setStudents(List<Student> students) {
         this.students = students;
     }

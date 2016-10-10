@@ -1,21 +1,28 @@
 package com.cooksys.serialization.assignment.model;
 
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "contact")
 public class Contact {
+	@XmlAttribute(name = "first-name" )
     private String firstName;
+	@XmlAttribute(name = "last-name" )
     private String lastName;
+	@XmlElement
     private String email;
+	@XmlElement (name = "phone-number")
     private String phoneNumber;
 
     public String getFirstName() {
         return firstName;
     }
 
-    @XmlAttribute(name="first-name")
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -24,7 +31,6 @@ public class Contact {
         return lastName;
     }
 
-    @XmlAttribute(name="last-name")
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
@@ -33,7 +39,6 @@ public class Contact {
         return email;
     }
 
-    @XmlElement(name="email")
     public void setEmail(String email) {
         this.email = email;
     }
@@ -42,7 +47,6 @@ public class Contact {
         return phoneNumber;
     }
 
-    @XmlElement(name="phone-number")
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }

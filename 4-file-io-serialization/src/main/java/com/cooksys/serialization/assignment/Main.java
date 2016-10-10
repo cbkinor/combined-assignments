@@ -28,20 +28,14 @@ public class Main {
      * @param studentContactFile the XML file to use
      * @param jaxb the JAXB context to use
      * @return a {@link Student} object built using the {@link Contact} data in the given file
+     * @throws JAXBException 
      */
 	
-    public static Student readStudent(File studentContactFile, JAXBContext jaxb) {
-    	try{
-    		Unmarshaller jaxbUnmarshaller = jaxb.createUnmarshaller();
-           	Contact newContact = (Contact) jaxbUnmarshaller.unmarshal(studentContactFile);
-            Student newStudent = new Student(newContact);
-	        newStudent.setContact(newContact);
-	        return newStudent;
-	        
-	    	}catch (JAXBException e) {
-	    		e.printStackTrace();
-	    	}
-    	return null;
+    public static Student readStudent(File studentContactFile, JAXBContext jaxb) throws JAXBException {
+    	Unmarshaller unmarshaller = jaxb.createUnmarshaller();
+       	Student student = new Student();
+       	student.setContact((Contact)unmarshaller.unmarshal(studentContactFile));
+    	return student;
     }
     
 
@@ -53,12 +47,19 @@ public class Main {
      * @return a list of {@link Student} objects built using the contact files in the given directory
      */
     public static List<Student> readStudents(File studentDirectory, JAXBContext jaxb) throws JAXBException {
-       	List<Student> students = new ArrayList<Student>();
-		for (File newFile : studentDirectory.listFiles()) {
-			Student newStudent = readStudent(newFile, jaxb);
-			students.add(newStudent);
-		}
-			return students;
+    	File[] paths;
+      	paths = studentDirectory.listFiles();
+      	List<Student> list = new ArrayList<Student>();
+
+    	for (int i =0; i<paths.length; i++){
+
+        	Unmarshaller unmarshaller = jaxb.createUnmarshaller();
+        	Student student = new Student();
+           	student.setContact((Contact)unmarshaller.unmarshal(paths[i]));
+        	list.add(student); 
+
+    	}
+    	return list;
     }
 
     /**
@@ -70,18 +71,11 @@ public class Main {
      * @param jaxb the JAXB context to use
      * @return an {@link Instructor} object built using the {@link Contact} data in the given file
      */
-    public static Instructor readInstructor(File instructorContactFile, JAXBContext jaxb) {
-    	try{
-    		Unmarshaller jaxbUnmarshaller = jaxb.createUnmarshaller();
-           	Contact newContact = (Contact) jaxbUnmarshaller.unmarshal(instructorContactFile);
-           	Instructor instructor = new Instructor(newContact);
-	        instructor.setContact(newContact);
-	        return instructor;
-	        
-    	}catch (JAXBException e) {
-    		e.printStackTrace();
-    		return null;
-    	}
+    public static Instructor readInstructor(File instructorContactFile, JAXBContext jaxb) throws JAXBException {
+    	Unmarshaller unmarshaller = jaxb.createUnmarshaller();
+    	Instructor instructor = new Instructor(null);
+    	instructor.setContact((Contact)unmarshaller.unmarshal(instructorContactFile));
+    	return instructor;
     }
 
     /**
@@ -96,17 +90,35 @@ public class Main {
      * @return a {@link Session} object built from the data in the given directory
      */
     public static Session readSession(File rootDirectory, JAXBContext jaxb) throws JAXBException {
-        Session session = new Session();
-		
-		session.setLocation(rootDirectory.getName());
-		for (File file : rootDirectory.listFiles()) {
-			session.setStartDate(file.getName());
-			File instructorFile = new File(file.getAbsoluteFile() + "\\instructor.xml");
-			session.setInstructor(readInstructor(instructorFile, jaxb));
-			File studentsDirectory = new File(file.getAbsolutePath() + "\\students");
-			session.setStudents(readStudents(studentsDirectory, jaxb));
-		}
-		return session;
+Session session = new Session();
+        
+    	String parentDirName = rootDirectory.getParent();
+    	
+    	//setLocation
+    	File file = new File(parentDirName);
+       	String[] location = file.list();
+       	session.setLocation(location[0]);
+       	
+    	
+        //setDate
+       	String[] date = rootDirectory.list();
+      	session.setStartDate(date[0]);
+       	
+       	//setInstructor
+      	file = new File(rootDirectory+"/"+date[0]);
+    	String[] instructor = file.list();
+     	File instructorFile = new File(rootDirectory+"/"+date[0]+"/"+instructor[0]);
+    	
+    	JAXBContext jaxbInstructor = JAXBContext.newInstance(Instructor.class);
+    	session.setInstructor(readInstructor(instructorFile, jaxbInstructor));
+    	
+    	//setStudent
+    	File[] dateDir = file.listFiles();
+    	File studentsDir = dateDir[0].isDirectory() ? dateDir[0]: dateDir[1];
+    	JAXBContext jaxbStudent = JAXBContext.newInstance(Student.class);
+    	session.setStudents(readStudents(studentsDir, jaxbStudent));
+    	
+    	return session;
     }
 
     /**
@@ -153,27 +165,18 @@ public class Main {
      *               ...
      *           </students>
      *      </session>
+     * @throws JAXBException 
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws JAXBException {
     	
-    	Contact contact = new Contact();
-    	contact.setFirstName("Chris");
-    	contact.setLastName("Kuiper");
-    	contact.setEmail("chris.kuiper@gmail.com");
-    	contact.setPhoneNumber("999-999-9999");
+    	JAXBContext jaxbSession = JAXBContext.newInstance(Session.class);
     	
-    	try {
-    		File file = new File("C:\\Users\\13\\Documents\\Projects\\combined-assignments\\4-file-io-serialization\\input\\memphis");
-    	JAXBContext fileSave = JAXBContext.newInstance(Contact.class);
-    	Marshaller jaxbMarshaller = fileSave.createMarshaller();
+    	File file = new File("input/memphis/");
     	
-    	jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+    	Session result = readSession(file, jaxbSession);
     	
-    	jaxbMarshaller.marshal(contact, file);
-    	jaxbMarshaller.marshal(contact, System.out);
+    	File sessionFile = new File("output/session.xml");
     	
-    	} catch (JAXBException e) {
-    		e.printStackTrace();
-    	}
+    	writeSession(result, sessionFile, jaxbSession);
     }
 }
