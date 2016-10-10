@@ -1,1 +1,5 @@
-<student/>
+<student first-name="" last-name="">
+	<favorite-ide></favorite-ide>
+	<favorite-language></favorite-language>
+	<favorite-paradigm></favorite-paradigm>
+</student>

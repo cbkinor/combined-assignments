@@ -1,1 +1,5 @@
-<config/>
+<config>
+	<local></local>
+	<remote></remote>
+	<student-file-path></student-file-path>
+</config>

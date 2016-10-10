@@ -1,16 +1,25 @@
-package com.cooksys.ftd.assignments.file;
+package com.cooksys.serialization.assignment;
 
-import com.cooksys.ftd.assignments.file.model.Contact;
-import com.cooksys.ftd.assignments.file.model.Instructor;
-import com.cooksys.ftd.assignments.file.model.Session;
-import com.cooksys.ftd.assignments.file.model.Student;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import com.cooksys.serialization.assignment.model.*;
 
 import javax.xml.bind.JAXBContext;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+
+import com.cooksys.serialization.assignment.model.Contact;
+import com.cooksys.serialization.assignment.model.Instructor;
+import com.cooksys.serialization.assignment.model.Session;
+import com.cooksys.serialization.assignment.model.Student;
 
 public class Main {
 
+	
     /**
      * Creates a {@link Student} object using the given studentContactFile.
      * The studentContactFile should be an XML file containing the marshaled form of a
@@ -21,8 +30,19 @@ public class Main {
      * @return a {@link Student} object built using the {@link Contact} data in the given file
      */
     public static Student readStudent(File studentContactFile, JAXBContext jaxb) {
-        return null; // TODO
+    	try{
+    		Unmarshaller jaxbUnmarshaller = jaxb.createUnmarshaller();
+           	Contact newContact = (Contact) jaxbUnmarshaller.unmarshal(studentContactFile);
+            Student newStudent = new Student(newContact);
+	        newStudent.setContact(newContact);
+	        return newStudent;
+	        
+	    	}catch (JAXBException e) {
+	    		e.printStackTrace();
+	    	}
+    	return null;
     }
+    
 
     /**
      * Creates a list of {@link Student} objects using the given directory of student contact files.
@@ -31,8 +51,13 @@ public class Main {
      * @param jaxb the JAXB context to use
      * @return a list of {@link Student} objects built using the contact files in the given directory
      */
-    public static List<Student> readStudents(File studentDirectory, JAXBContext jaxb) {
-        return null; // TODO
+    public static List<Student> readStudents(File studentDirectory, JAXBContext jaxb) throws JAXBException {
+       	List<Student> students = new ArrayList<Student>();
+		for (File newFile : studentDirectory.listFiles()) {
+			Student newStudent = readStudent(newFile, jaxb);
+			students.add(newStudent);
+		}
+			return students;
     }
 
     /**
@@ -45,7 +70,17 @@ public class Main {
      * @return an {@link Instructor} object built using the {@link Contact} data in the given file
      */
     public static Instructor readInstructor(File instructorContactFile, JAXBContext jaxb) {
-        return null; // TODO
+    	try{
+    		Unmarshaller jaxbUnmarshaller = jaxb.createUnmarshaller();
+           	Contact newContact = (Contact) jaxbUnmarshaller.unmarshal(instructorContactFile);
+           	Instructor instructor = new Instructor(newContact);
+	        instructor.setContact(newContact);
+	        return instructor;
+	        
+    	}catch (JAXBException e) {
+    		e.printStackTrace();
+    		return null;
+    	}
     }
 
     /**
@@ -59,8 +94,18 @@ public class Main {
      * @param jaxb the JAXB context to use
      * @return a {@link Session} object built from the data in the given directory
      */
-    public static Session readSession(File rootDirectory, JAXBContext jaxb) {
-        return null; // TODO
+    public static Session readSession(File rootDirectory, JAXBContext jaxb) throws JAXBException {
+        Session session = new Session();
+		
+		session.setLocation(rootDirectory.getName());
+		for (File file : rootDirectory.listFiles()) {
+			session.setStartDate(file.getName());
+			File instructorFile = new File(file.getAbsoluteFile() + "\\instructor.xml");
+			session.setInstructor(readInstructor(instructorFile, jaxb));
+			File studentsDirectory = new File(file.getAbsolutePath() + "\\students");
+			session.setStudents(readStudents(studentsDirectory, jaxb));
+		}
+		return session;
     }
 
     /**
@@ -71,7 +116,15 @@ public class Main {
      * @param jaxb the JAXB context to use
      */
     public static void writeSession(Session session, File sessionFile, JAXBContext jaxb) {
-        // TODO
+    	try {
+			Marshaller jaxbMarshaller = jaxb.createMarshaller();
+			jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+			jaxbMarshaller.marshal(session, sessionFile);
+			jaxbMarshaller.marshal(session, System.out);
+			
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
     }
 
     /**
@@ -101,6 +154,25 @@ public class Main {
      *      </session>
      */
     public static void main(String[] args) {
-        // TODO
+    	
+    	Contact contact = new Contact();
+    	contact.setFirstName("Chris");
+    	contact.setLastName("Kuiper");
+    	contact.setEmail("chris.kuiper@gmail.com");
+    	contact.setPhoneNumber("999-999-9999");
+    	
+    	try {
+    		File file = new File("C:\\Users\\13\\Documents\\Projects\\combined-assignments\\4-file-io-serialization\\input\\memphis");
+    	JAXBContext fileSave = JAXBContext.newInstance(Contact.class);
+    	Marshaller jaxbMarshaller = fileSave.createMarshaller();
+    	
+    	jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+    	
+    	jaxbMarshaller.marshal(contact, file);
+    	jaxbMarshaller.marshal(contact, System.out);
+    	
+    	} catch (JAXBException e) {
+    		e.printStackTrace();
+    	}
     }
 }
