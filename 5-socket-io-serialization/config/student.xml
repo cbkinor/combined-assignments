@@ -1,4 +1,4 @@
-<student first-name="Chris" last-name="Kuiper">
+<student firstName="Chris" lastName="Kuiper">
 	<favorite-ide>Atom</favorite-ide>
 	<favorite-language>Java</favorite-language>
 	<favorite-paradigm>OOP</favorite-paradigm>

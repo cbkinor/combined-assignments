@@ -1,5 +1,5 @@
 <config>
-	<local/>
-	<remote/>
-	<student-file-path></student-file-path>
+	<local port="80"/>
+	<remote host="172.17.161.43" port="80"/>
+	<student-file-path>config\student.xml</student-file-path>
 </config>
