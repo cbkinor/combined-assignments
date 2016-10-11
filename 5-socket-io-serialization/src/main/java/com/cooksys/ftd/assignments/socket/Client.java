@@ -28,14 +28,24 @@ public class Client {
         File file = new File("config/config.xml");
         Config Config = (Config)data.unmarshal(file);
         
-        Socket s = new Socket(Config.getRemote().getHost(), Config.getRemote().getPort());
-        InputStream in = s.getInputStream();
+        Socket socket = null;
+        InputStream in = null;
         
-        Unmarshaller jaxUnmarshaller = Utils.createJAXBContext().createUnmarshaller();
-        Student student = (Student) jaxUnmarshaller.unmarshal(in);
-        System.out.println(student);
-        
-        in.close();
-        s.close();
+        try {
+			socket = new Socket(Config.getRemote().getHost(), Config.getRemote().getPort());
+			in = socket.getInputStream();
+        	Unmarshaller jaxUnmarshaller = Utils.createJAXBContext().createUnmarshaller();
+            Student student = (Student) jaxUnmarshaller.unmarshal(in);
+            System.out.println(student);
+        }
+        catch (JAXBException e) {
+			e.printStackTrace();
+		}
+        finally {
+        	if(socket != null)
+        		socket.close();
+	        if(in != null)
+	        	in.close();
+		}
     }
 }

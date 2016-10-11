@@ -46,6 +46,7 @@ public class Server extends Utils {
      * socket's output stream, sending the object to the client.
      *
      * Following this transaction, the server may shut down or listen for more connections.
+     * @throws JAXBException 
      */
     public static void main(String[] args) throws UnknownHostException, IOException, JAXBException {
         Unmarshaller data = Utils.createJAXBContext().createUnmarshaller();
@@ -55,16 +56,26 @@ public class Server extends Utils {
         Student student= loadStudent(Config.getStudentFilePath(), Utils.createJAXBContext());
         System.out.println(student);
         
-        ServerSocket server = new ServerSocket(Config.getLocal().getPort());
-        Socket socket = server.accept();
-        OutputStream out = socket.getOutputStream();
+        ServerSocket server = null;
+        Socket socket = null;
         
-        Marshaller jaxMarshaller = Utils.createJAXBContext().createMarshaller();
-        jaxMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        jaxMarshaller.marshal(student, out);
-        
-        socket.close();
-        server.close();
-        
+        try{
+        	server = new ServerSocket(Config.getLocal().getPort());
+            socket = server.accept();
+            OutputStream out = socket.getOutputStream();
+            
+            Marshaller jaxMarshaller = Utils.createJAXBContext().createMarshaller();
+            jaxMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            jaxMarshaller.marshal(student, out);
+        }
+        catch (JAXBException e) {
+			e.printStackTrace();
+		}
+        finally {
+        	if(socket != null)
+        		socket.close();
+	        if(server != null)
+	        	server.close();
+		}
     }
 }
