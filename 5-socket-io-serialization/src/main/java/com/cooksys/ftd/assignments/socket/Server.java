@@ -1,7 +1,6 @@
 package com.cooksys.ftd.assignments.socket;
 
-import com.cooksys.ftd.assignments.socket.model.Config;
-import com.cooksys.ftd.assignments.socket.model.Student;
+import com.cooksys.ftd.assignments.socket.model.*;
 
 import java.io.File;
 import java.io.IOException;

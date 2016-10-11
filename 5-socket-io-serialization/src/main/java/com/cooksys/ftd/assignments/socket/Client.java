@@ -9,8 +9,7 @@ import java.net.UnknownHostException;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import com.cooksys.ftd.assignments.socket.model.Config;
-import com.cooksys.ftd.assignments.socket.model.Student;
+import com.cooksys.ftd.assignments.socket.model.*;
 
 public class Client {
 
