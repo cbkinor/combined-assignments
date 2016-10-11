@@ -40,4 +40,12 @@ public class Config {
     public void setStudentFilePath(String studentFilePath) {
         this.studentFilePath = studentFilePath;
     }
+
+	@Override
+	public String toString() {
+		return "Config [local=" + local + ", remote=" + remote + ", studentFilePath=" + studentFilePath + "]";
+	}
+    
+    
+    
 }
