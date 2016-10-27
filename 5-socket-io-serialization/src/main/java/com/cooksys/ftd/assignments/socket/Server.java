@@ -1,7 +1,5 @@
 package com.cooksys.ftd.assignments.socket;
 
-import com.cooksys.ftd.assignments.socket.model.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -13,6 +11,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+
+import com.cooksys.ftd.assignments.socket.model.*;
 
 public class Server extends Utils {
 

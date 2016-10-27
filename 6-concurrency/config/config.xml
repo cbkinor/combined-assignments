@@ -1,10 +1,10 @@
 <config>
     <server disabled="false">
-        <port>8080</port>
+        <port>80</port>
         <max-clients>-1</max-clients>
     </server>
     <client disabled="false">
-        <port>8080</port>
+        <port>80</port>
         <host>localhost</host>
         <max-instances>-1</max-instances>
         <spawn-strategy>PARALLEL</spawn-strategy>

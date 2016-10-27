@@ -50,5 +50,12 @@ public class ServerConfig {
     public void setMaxClients(int maxClients) {
         this.maxClients = maxClients;
     }
+
+	@Override
+	public String toString() {
+		return "ServerConfig [disabled=" + disabled + ", port=" + port + ", maxClients=" + maxClients + "]";
+	}
+    
+    
 }
 

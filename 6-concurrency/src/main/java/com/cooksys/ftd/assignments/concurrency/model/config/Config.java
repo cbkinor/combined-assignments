@@ -1,48 +1,69 @@
 package com.cooksys.ftd.assignments.concurrency.model.config;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-import javax.xml.bind.annotation.*;
+import java.io.File;
 import java.nio.file.Path;
-import java.util.List;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import Util.Debugger;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Config {
 
-    /**
-     * Loads a {@link Config} object from the given xml file path
-     *
-     * @param path the path at which an xml configuration can be found
-     * @return the unmarshalled {@link Config} object
-     */
-    public static Config load(Path path) {
-        throw new NotImplementedException();
-    }
+	/**
+	 * Loads a {@link Config} object from the given xml file path
+	 *
+	 * @param path
+	 *            the path at which an xml configuration can be found
+	 * @return the unmarshalled {@link Config} object
+	 * @throws JAXBException 
+	 */
+	public static Config load(Path path) throws JAXBException {
+		Debugger.debugMessage("Loading contents from configure file");
+		JAXBContext jaxb = JAXBContext.newInstance(Config.class);
+		Unmarshaller jaxbUnmarshaller = jaxb.createUnmarshaller();
+		Config config = (Config) jaxbUnmarshaller.unmarshal(path.toFile());
+		return config;
+	}
+	
+	
+	/**
+	 * server configuration
+	 */
+	private ServerConfig server;
 
-    /**
-     * server configuration
-     */
-    private ServerConfig server;
+	/**
+	 * client configuration
+	 */
+	private ClientConfig client;
 
-    /**
-     * client configuration
-     */
-    private ClientConfig client;
+	public ServerConfig getServer() {
+		return server;
+	}
 
-    public ServerConfig getServer() {
-        return server;
-    }
+	public void setServer(ServerConfig server) {
+		this.server = server;
+	}
 
-    public void setServer(ServerConfig server) {
-        this.server = server;
-    }
+	public ClientConfig getClient() {
+		return client;
+	}
 
-    public ClientConfig getClient() {
-        return client;
-    }
+	public void setClient(ClientConfig client) {
+		this.client = client;
+	}
 
-    public void setClient(ClientConfig client) {
-        this.client = client;
-    }
+	@Override
+	public String toString() {
+		return "Config [server=" + server + ", client=" + client + "]";
+	}
+	
+	
 }

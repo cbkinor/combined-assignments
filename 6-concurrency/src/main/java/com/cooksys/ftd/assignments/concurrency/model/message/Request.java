@@ -16,4 +16,9 @@ public class Request {
     public void setType(RequestType type) {
         this.type = type;
     }
+
+	@Override
+	public String toString() {
+		return "Request [type=" + type + "]";
+	}
 }

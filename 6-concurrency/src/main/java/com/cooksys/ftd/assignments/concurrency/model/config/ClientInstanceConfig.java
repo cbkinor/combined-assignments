@@ -41,4 +41,15 @@ public class ClientInstanceConfig {
     public void setRequests(List<Request> requests) {
         this.requests = requests;
     }
+
+	@Override
+	public String toString() {
+		String requestsString = "";
+		for(Request request : requests) {
+			requestsString += request.toString();
+		}
+		return "ClientInstanceConfig [delay=" + delay + ", requests=" + requestsString + "]";
+	}
+    
+    
 }

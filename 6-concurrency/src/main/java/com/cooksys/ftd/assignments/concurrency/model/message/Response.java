@@ -38,4 +38,11 @@ public class Response {
     public void setSuccessful(boolean successful) {
         this.successful = successful;
     }
+
+	@Override
+	public String toString() {
+		return "Response [data=" + data + ", type=" + type + ", successful=" + successful + "]";
+	}
+    
+    
 }

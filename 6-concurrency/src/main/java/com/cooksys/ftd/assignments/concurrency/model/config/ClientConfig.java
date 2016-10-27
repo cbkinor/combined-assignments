@@ -101,4 +101,16 @@ public class ClientConfig {
     public void setInstances(List<ClientInstanceConfig> instances) {
         this.instances = instances;
     }
+
+	@Override
+	public String toString() {
+		String instancesString = "";
+		for(ClientInstanceConfig instance : instances) {
+			instancesString += instance.toString();
+		}
+		return "ClientConfig [disabled=" + disabled + ", port=" + port + ", host=" + host + ", maxInstances="
+				+ maxInstances + ", spawnStrategy=" + spawnStrategy + ", instances=" + instancesString + "]";
+	}
+    
+    
 }
